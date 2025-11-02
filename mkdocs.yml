@@ -19,6 +19,6 @@ extra_css:
   - styles/github-universe.css
 nav:
   - Home: index.md
+  - Write a Story: write.md
   - Chapters: 
       - chapters/index.md
-  - Responsible AI & Security: responsible_ai.md

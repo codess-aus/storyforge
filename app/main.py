@@ -17,12 +17,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI, HTTPException, Body
+from fastapi.middleware.cors import CORSMiddleware
 from app.agents.prompt_agent import generate_prompt
 from app.agents.editor_agent import suggest_edits
 from app.agents.illustrator_agent import generate_illustration
 from app.agents.safety_filter import content_is_safe
 
 app = FastAPI(title="StoryForge Agents API")
+
+# Enable CORS for local development and GitHub Pages
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify exact origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/prompt")
 def get_prompt(user_id: str = "guest"):
