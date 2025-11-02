@@ -12,10 +12,11 @@ Each agent is modular, making it easy to scale or swap out as needed.
 
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Body
 
-# Load environment variables
+# Load environment variables FIRST before any other imports
 load_dotenv()
+
+from fastapi import FastAPI, HTTPException, Body
 from app.agents.prompt_agent import generate_prompt
 from app.agents.editor_agent import suggest_edits
 from app.agents.illustrator_agent import generate_illustration
@@ -26,6 +27,9 @@ app = FastAPI(title="StoryForge Agents API")
 @app.get("/prompt")
 def get_prompt(user_id: str = "guest"):
     "Prompt Agent: Returns a creative writing prompt."
+    # Debug: print endpoint being used
+    endpoint = os.getenv("AZURE_AI_ENDPOINT", "NOT_SET")
+    print(f"DEBUG: Using endpoint: {endpoint}")
     return {"prompt": generate_prompt(user_id)}
 
 @app.post("/filter")
