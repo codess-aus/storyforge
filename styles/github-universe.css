@@ -1,0 +1,32 @@
+/* GitHub Universe-inspired color tweaks and modern styling for StoryForge */
+
+:root {
+  --md-primary-fg-color: #24292f;
+  --md-accent-fg-color: #8257e6;
+  --md-typeset-a-color: #1b6cff;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+  background: #0d1117;
+  color: #c9d1d9;
+}
+
+.md-header, .md-footer {
+  background: linear-gradient(90deg, #24292f 40%, #8257e6 100%);
+}
+
+.md-main__inner {
+  border-radius: 12px;
+  background: #161b22;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+}
+
+.md-typeset h1, .md-typeset h2 {
+  color: #58a6ff;
+}
+
+img {
+  border-radius: 8px;
+  border: 2px solid #8257e6;
+}

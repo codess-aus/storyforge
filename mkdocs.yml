@@ -1,0 +1,26 @@
+site_name: StoryForge
+site_description: "Collaborative, AI-powered story writing and illustration"
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: blue
+      accent: indigo
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: pink
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
+extra_css:
+  - styles/github-universe.css
+nav:
+  - Home: index.md
+  - Chapters: 
+      - chapters/index.md
+  - Structure: structure.md
+  - MVP Details: MVP.md
+  - Responsible AI & Security: responsible_ai.md
