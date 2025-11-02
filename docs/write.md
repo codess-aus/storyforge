@@ -1,5 +1,12 @@
 # Write Your Story
 
+!!! success "Live Production API"
+    This interface is connected to the deployed StoryForge API on Azure Container Apps.
+    
+    - **API Endpoint:** https://storyforge-api.jollyflower-0fc4b005.swedencentral.azurecontainerapps.io
+    - **Local Development:** Run `uvicorn app.main:app --reload --port 8001` and change API_BASE in the script section
+    - **Deployment Guide:** See [QUICK_DEPLOY.md](https://github.com/codess-aus/storyforge/blob/main/QUICK_DEPLOY.md) for redeployment instructions.
+
 <div id="story-app">
   <div class="prompt-section">
     <h2>📝 Get Inspired</h2>
@@ -132,7 +139,7 @@
 </style>
 
 <script>
-  const API_BASE = 'http://localhost:8001';  // Update this when deployed to Azure
+  const API_BASE = 'https://storyforge-api.jollyflower-0fc4b005.swedencentral.azurecontainerapps.io';
 
   document.getElementById('get-prompt-btn').addEventListener('click', async () => {
     const btn = document.getElementById('get-prompt-btn');
