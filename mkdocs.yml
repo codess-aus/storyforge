@@ -21,6 +21,4 @@ nav:
   - Home: index.md
   - Chapters: 
       - chapters/index.md
-  - Structure: structure.md
-  - MVP Details: MVP.md
   - Responsible AI & Security: responsible_ai.md
