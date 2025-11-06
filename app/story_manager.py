@@ -111,8 +111,12 @@ def list_stories() -> List[Dict]:
         
         for content_file in contents:
             if content_file.name.endswith('.md') and content_file.name != 'index.md':
-                # Get file content to parse frontmatter
-                file_content = content_file.decoded_content.decode('utf-8')
+                try:
+                    # Get file content to parse frontmatter
+                    file_content = content_file.decoded_content.decode('utf-8')
+                except Exception as e:
+                    print(f"Warning: Skipping {content_file.name} due to encoding error: {e}")
+                    continue
                 
                 # Parse frontmatter
                 metadata = parse_frontmatter(file_content)
