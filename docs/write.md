@@ -288,6 +288,8 @@
         storyData.image = generatedImage;
       }
       
+      let response;
+      
       if (editingStory) {
         // Update existing story
         response = await fetch(`${API_BASE}/stories/${editingStory.id}`, {
@@ -305,7 +307,7 @@
       }
       
       if (!response.ok) {
-        throw new Error('Failed to save story');
+        const errorData = await response.json().catch(() => ({})); throw new Error(errorData.detail || 'Failed to save story');
       }
       
       const data = await response.json();
@@ -328,7 +330,7 @@
       }
       
     } catch (error) {
-      alert('Failed to save story. Please try again.');
+      alert('Failed to save story: ' + error.message);
       console.error(error);
     } finally {
       btn.disabled = false;
