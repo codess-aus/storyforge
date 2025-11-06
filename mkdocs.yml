@@ -20,5 +20,6 @@ extra_css:
 nav:
   - Home: index.md
   - Write a Story: write.md
+  - Story Gallery: stories.md
   - Chapters: 
       - chapters/index.md

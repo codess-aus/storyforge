@@ -19,9 +19,13 @@ StoryForge helps you write amazing stories with AI assistance. Get creative prom
 Ready to write your first story?
 
 <div style="text-align: center; margin: 30px 0;">
-  <a href="write/" style="display: inline-block; background: #6f42c1; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">Start Writing →</a>
+  <a href="write/" style="display: inline-block; background: #6f42c1; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold; margin-right: 15px;">Start Writing →</a>
+  <a href="stories/" style="display: inline-block; background: #28a745; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">Browse Stories →</a>
 </div>
 
-## Browse Stories
+## How It Works
 
-Check out stories from other writers in the [Chapters](chapters/) section.
+1. **Get Inspired** - Click "Get Writing Prompt" for a creative story idea
+2. **Write Your Story** - Use the editor with AI suggestions
+3. **Add Illustrations** - Generate anime-style artwork
+4. **Save & Share** - Stories are automatically published to the gallery

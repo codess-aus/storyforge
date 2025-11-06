@@ -140,6 +140,20 @@
 
 <script>
   const API_BASE = 'https://storyforge-api.jollyflower-0fc4b005.swedencentral.azurecontainerapps.io';
+  
+  // Check if we're editing an existing story
+  let editingStory = null;
+  const editData = sessionStorage.getItem('editStory');
+  if (editData) {
+    editingStory = JSON.parse(editData);
+    sessionStorage.removeItem('editStory');
+    
+    // Populate the editor
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('story-input').value = editingStory.content;
+      document.querySelector('h1').textContent = `Edit: ${editingStory.title}`;
+    });
+  }
 
   document.getElementById('get-prompt-btn').addEventListener('click', async () => {
     const btn = document.getElementById('get-prompt-btn');
@@ -227,23 +241,80 @@
     }
   });
 
-  document.getElementById('save-story-btn').addEventListener('click', () => {
+  document.getElementById('save-story-btn').addEventListener('click', async () => {
     const story = document.getElementById('story-input').value;
+    const btn = document.getElementById('save-story-btn');
     
     if (!story.trim()) {
       alert('Please write some story content first!');
       return;
     }
     
-    // For MVP: download as file. Later: commit to GitHub via API
-    const blob = new Blob([story], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `story-${Date.now()}.md`;
-    a.click();
-    URL.revokeObjectURL(url);
+    // Get story title from user
+    const defaultTitle = editingStory ? editingStory.title : 'My Story';
+    const title = prompt('Enter a title for your story:', defaultTitle);
+    if (!title) return;
     
-    alert('Story downloaded! In production, this will save to GitHub automatically.');
+    // Get author name (optional)
+    const defaultAuthor = editingStory ? editingStory.author : 'anonymous';
+    const author = prompt('Enter your name (optional):', defaultAuthor) || 'anonymous';
+    
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+    
+    try {
+      let response;
+      
+      if (editingStory) {
+        // Update existing story
+        response = await fetch(`${API_BASE}/stories/${editingStory.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: title,
+            content: story,
+            author: author
+          })
+        });
+      } else {
+        // Create new story
+        response = await fetch(`${API_BASE}/stories`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: title,
+            content: story,
+            author: author
+          })
+        });
+      }
+      
+      if (!response.ok) {
+        throw new Error('Failed to save story');
+      }
+      
+      const data = await response.json();
+      
+      // Show success message with link
+      const viewUrl = data.url;
+      const action = editingStory ? 'updated' : 'saved';
+      alert(`Story ${action} successfully!\n\nIt will be published at:\n${viewUrl}\n\n(Note: It may take 1-2 minutes for GitHub Pages to deploy)`);
+      
+      // Clear editing state
+      editingStory = null;
+      document.querySelector('h1').textContent = 'Write Your Story';
+      
+      // Clear the textarea
+      if (confirm('Clear the editor?')) {
+        document.getElementById('story-input').value = '';
+      }
+      
+    } catch (error) {
+      alert('Failed to save story. Please try again.');
+      console.error(error);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Save Story';
+    }
   });
 </script>
