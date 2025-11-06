@@ -77,11 +77,13 @@ class StoryCreate(BaseModel):
     title: str
     content: str
     author: str = "anonymous"
+    image: Optional[str] = None  # Base64 encoded image
 
 class StoryUpdate(BaseModel):
     title: str
     content: str
     author: str = "anonymous"
+    image: Optional[str] = None  # Base64 encoded image
 
 
 # Story Management Endpoints
@@ -92,7 +94,8 @@ def create_story(story: StoryCreate):
         result = save_story(
             title=story.title,
             content=story.content,
-            author=story.author
+            author=story.author,
+            image=story.image
         )
         return result
     except Exception as e:
@@ -128,7 +131,8 @@ def update_story_by_id(story_id: str, story: StoryUpdate):
             story_id=story_id,
             title=story.title,
             content=story.content,
-            author=story.author
+            author=story.author,
+            image=story.image
         )
         return result
     except Exception as e:

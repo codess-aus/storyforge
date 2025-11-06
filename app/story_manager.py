@@ -34,7 +34,7 @@ def slugify(title: str) -> str:
     slug = re.sub(r'[-\s]+', '-', slug)
     return slug.strip('-')
 
-def save_story(title: str, content: str, author: str = "anonymous") -> Dict:
+def save_story(title: str, content: str, author: str = "anonymous", image: str = None) -> Dict:
     """
     Save a story to GitHub repository.
     
@@ -42,6 +42,7 @@ def save_story(title: str, content: str, author: str = "anonymous") -> Dict:
         title: Story title
         content: Story content (markdown)
         author: Author name/identifier
+        image: Optional base64 encoded image
         
     Returns:
         Dict with story metadata including URL
@@ -59,10 +60,18 @@ def save_story(title: str, content: str, author: str = "anonymous") -> Dict:
 title: "{title}"
 author: "{author}"
 date: "{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
----
-
 """
+    
+    if image:
+        frontmatter += f'image: "{image}"\n'
+    
+    frontmatter += "---\n\n"
+    
     full_content = frontmatter + content
+    
+    # Add image display if image exists
+    if image:
+        full_content += f'\n\n<div style="text-align: center; margin-top: 20px;">\n<img src="{image}" alt="{title}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">\n</div>'
     
     # Commit to repository
     try:
@@ -81,7 +90,8 @@ date: "{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
             "filename": filename,
             "filepath": filepath,
             "url": f"https://codess-aus.github.io/storyforge/chapters/{filename.replace('.md', '')}",
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
+            "has_image": image is not None
         }
     except GithubException as e:
         raise Exception(f"Failed to save story to GitHub: {str(e)}")
@@ -158,7 +168,7 @@ def get_story(story_id: str) -> Optional[Dict]:
             return None
         raise Exception(f"Failed to retrieve story: {str(e)}")
 
-def update_story(story_id: str, title: str, content: str, author: str = "anonymous") -> Dict:
+def update_story(story_id: str, title: str, content: str, author: str = "anonymous", image: str = None) -> Dict:
     """
     Update an existing story.
     
@@ -167,6 +177,7 @@ def update_story(story_id: str, title: str, content: str, author: str = "anonymo
         title: Updated title
         content: Updated content
         author: Author name
+        image: Optional base64 encoded image
         
     Returns:
         Dict with updated story metadata
@@ -181,10 +192,18 @@ title: "{title}"
 author: "{author}"
 date: "{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
 updated: "{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
----
-
 """
+    
+    if image:
+        frontmatter += f'image: "{image}"\n'
+    
+    frontmatter += "---\n\n"
+    
     full_content = frontmatter + content
+    
+    # Add image display if image exists
+    if image:
+        full_content += f'\n\n<div style="text-align: center; margin-top: 20px;">\n<img src="{image}" alt="{title}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">\n</div>'
     
     try:
         # Get current file to get its SHA
@@ -206,7 +225,8 @@ updated: "{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
             "filename": filename,
             "filepath": filepath,
             "url": f"https://codess-aus.github.io/storyforge/chapters/{story_id}",
-            "updated_at": datetime.now().isoformat()
+            "updated_at": datetime.now().isoformat(),
+            "has_image": image is not None
         }
         
     except GithubException as e:

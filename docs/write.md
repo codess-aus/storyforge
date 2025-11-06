@@ -143,6 +143,8 @@
   
   // Check if we're editing an existing story
   let editingStory = null;
+  let generatedImage = null; // Store the generated image
+  
   const editData = sessionStorage.getItem('editStory');
   if (editData) {
     editingStory = JSON.parse(editData);
@@ -152,6 +154,15 @@
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('story-input').value = editingStory.content;
       document.querySelector('h1').textContent = `Edit: ${editingStory.title}`;
+      
+      // Load existing image if available
+      if (editingStory.image) {
+        const section = document.getElementById('image-section');
+        const display = document.getElementById('image-display');
+        section.style.display = 'block';
+        display.innerHTML = `<img src="${editingStory.image}" alt="Story illustration">`;
+        generatedImage = editingStory.image;
+      }
     });
   }
 
@@ -233,6 +244,8 @@
       const data = await response.json();
       
       display.innerHTML = `<img src="${data.image_url}" alt="Story illustration">`;
+      // Store the generated image to save with story
+      generatedImage = data.image_url;
     } catch (error) {
       display.innerHTML = '<p class="error">Failed to generate image. Make sure the API server is running.</p>';
     } finally {
@@ -263,29 +276,31 @@
     btn.textContent = 'Saving...';
     
     try {
-      let response;
+      // Prepare story data with optional image
+      const storyData = {
+        title: title,
+        content: story,
+        author: author
+      };
+      
+      // Add image if one was generated
+      if (generatedImage) {
+        storyData.image = generatedImage;
+      }
       
       if (editingStory) {
         // Update existing story
         response = await fetch(`${API_BASE}/stories/${editingStory.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: title,
-            content: story,
-            author: author
-          })
+          body: JSON.stringify(storyData)
         });
       } else {
         // Create new story
         response = await fetch(`${API_BASE}/stories`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: title,
-            content: story,
-            author: author
-          })
+          body: JSON.stringify(storyData)
         });
       }
       
@@ -302,11 +317,14 @@
       
       // Clear editing state
       editingStory = null;
+      generatedImage = null;
       document.querySelector('h1').textContent = 'Write Your Story';
       
-      // Clear the textarea
+      // Clear the textarea and image
       if (confirm('Clear the editor?')) {
         document.getElementById('story-input').value = '';
+        document.getElementById('image-section').style.display = 'none';
+        document.getElementById('image-display').innerHTML = '';
       }
       
     } catch (error) {
